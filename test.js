@@ -1,9 +1,9 @@
 import test from 'ava';
 const Romi = require('./index');
 
-test.cb((t) => {
-  t.plan(5);
-  Romi.resolve('a').then((res) => {
+test((t) => {
+  t.plan(6);
+  return Romi.resolve('a').then((res) => {
     t.is(res, 'a');
     return Romi.reject('b');
   }).catch((rea) => {
@@ -19,6 +19,29 @@ test.cb((t) => {
     return Romi.resolve('e');
   }).then((res) => {
     t.is(res, 'e');
-    t.end();
+    return 'f';
+  }).catch(() => {
+    t.fail();
+  }).then((res) => {
+    t.is(res, 'f');
+  });
+});
+
+test('Throw uncaught error', (t) => {
+  t.plan(1);
+  const r = new Romi();
+  const errorMessage = 'some-error-message';
+  t.throws(() => {
+    r.reject(new Error(errorMessage));
+  }, errorMessage);
+});
+
+test('Prevent completing already completed promises', (t) => {
+  t.plan(1);
+  const r = Romi.resolve('whatever');
+  return r.then(() => {
+    t.throws(() => {
+      r.resolve('again');
+    }, /already/);
   });
 });
