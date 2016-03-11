@@ -28,6 +28,10 @@ Romi.prototype.then = function (onResolve, onReject) {
   return r;
 };
 
+Romi.prototype.catch = function (onReject) {
+  return this.then(null, onReject);
+};
+
 Romi.prototype.resolve = function (val) {
   this.complete('resolve', val);
 };
