@@ -8,7 +8,7 @@ const Romi = module.exports = function (initializer) {
   }
 };
 
-Romi.resolve = (val) => new Romi((resolve) => resolve(val));
+Romi.resolve = (val) => new Romi((resolve) => setTimeout(() => resolve(val), 1));
 Romi.reject = (val) => new Romi((resolve, reject) => setTimeout(() => reject(val), 1));
 Romi.complete = (which, val) => Romi[which](val);
 Romi.then = (onResolve, onReject) => {
