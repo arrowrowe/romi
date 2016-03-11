@@ -7,7 +7,7 @@
     "lint": "xo",
     "test:only": "ava",
     "test:easy": "npm run lint && npm run test:only",
-    "test": "nyc npm run test:easy"
+    "test": "nyc npm run test:easy && nyc check-coverage --lines 100 --functions 100 --branches 100"
   },
   "repository": {
     "type": "git",
