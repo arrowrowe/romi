@@ -1,7 +1,7 @@
 {
   "name": "romi",
   "version": "0.0.1",
-  "description": "A Promise implementation. ",
+  "description": "A Promise implementation.",
   "main": "index.js",
   "scripts": {
     "lint": "xo",
