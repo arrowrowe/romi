@@ -13,7 +13,7 @@ test.cb((t) => {
     t.is(res, 'c');
     throw 'd';
   }).then(() => {
-    t.end();
+    t.fail();
   }).catch((rea) => {
     t.is(rea, 'd');
     return Romi.resolve('e');
