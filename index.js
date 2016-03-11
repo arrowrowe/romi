@@ -21,6 +21,7 @@ Romi.then = (onResolve, onReject) => {
   };
   return r;
 };
+Romi.catch = (onReject) => Romi.then(null, onReject);
 
 Romi.prototype.then = function (onResolve, onReject) {
   const r = Romi.then(onResolve, onReject);
