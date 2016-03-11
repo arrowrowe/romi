@@ -4,6 +4,7 @@
   "description": "A Promise implementation. ",
   "main": "index.js",
   "scripts": {
+    "lint": "xo",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,5 +19,16 @@
   "bugs": {
     "url": "https://github.com/arrowrowe/romi/issues"
   },
-  "homepage": "https://github.com/arrowrowe/romi#readme"
+  "homepage": "https://github.com/arrowrowe/romi#readme",
+  "devDependencies": {
+    "xo": "0.13.0"
+  },
+  "xo": {
+    "esnext": false,
+    "semicolon": true,
+    "space": 2,
+    "rules": {
+      "arrow-parens": [2, "always"]
+    }
+  }
 }
