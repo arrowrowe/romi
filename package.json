@@ -1,0 +1,22 @@
+{
+  "name": "romi",
+  "version": "0.0.1",
+  "description": "A Promise implementation. ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arrowrowe/romi.git"
+  },
+  "keywords": [
+    "Promise"
+  ],
+  "author": "arrowrowe <arrowrowe@gmail.com> (https://github.com/arrowrowe)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/arrowrowe/romi/issues"
+  },
+  "homepage": "https://github.com/arrowrowe/romi#readme"
+}
