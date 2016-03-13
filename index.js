@@ -50,14 +50,6 @@ Romi.prototype.reject = function (val) {
   this.complete('reject', val);
 };
 
-const duplicate = (src, dest) => {
-  if (src._followers) {
-    src._followers = dest._followers;
-  } else {
-    dest.complete(src._which, src._val);
-  }
-};
-
 Romi.prototype.complete = function (whichOrigin, valOrigin) {
   this.complete = this.resolve = this.reject = (which, val) => {
     throw new Error('Promise already completed. [' + which + '][' + val + ']');
@@ -75,7 +67,11 @@ Romi.prototype.complete = function (whichOrigin, valOrigin) {
       which = 'reject';
     }
     if (val instanceof Romi) {
-      duplicate(val, r);
+      if (val._followers) {
+        val._followers = r._followers;
+      } else {
+        r.complete(val._which, val._val);
+      }
     } else {
       r[which](val);
     }
