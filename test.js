@@ -66,3 +66,10 @@ test.cb('Support multiple followers', (t) => {
     fullfill();
   });
 });
+
+test.cb('Cancelable', (t) => {
+  const a = Romi.resolve('Fail to cancel', 1);
+  a.then(t.fail.bind(t));
+  a.cancel();
+  setTimeout(t.end, 2);
+});

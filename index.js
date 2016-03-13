@@ -10,9 +10,9 @@ const Romi = module.exports = function (initializer) {
   }
 };
 
-Romi.resolve = (val) => new Romi((resolve) => setTimeout(() => resolve(val), 1));
-Romi.reject = (val) => new Romi((resolve, reject) => setTimeout(() => reject(val), 1));
-Romi.complete = (which, val) => Romi[which](val);
+Romi.resolve = (val, ms) => new Romi((resolve) => setTimeout(() => resolve(val), ms || 1));
+Romi.reject = (val, ms) => new Romi((resolve, reject) => setTimeout(() => reject(val), ms || 1));
+Romi.complete = (which, val, ms) => Romi[which](val, ms);
 Romi.then = (onResolve, onReject) => {
   const r = new Romi();
   r._on = {
@@ -69,5 +69,10 @@ Romi.prototype.complete = function (whichOrigin, valOrigin) {
   };
   this.then = (onResolve, onReject) => complete(Romi.then(onResolve, onReject));
   this._followers.forEach(complete);
+  delete this._followers;
+};
+
+Romi.prototype.cancel = function () {
+  this.complete = this.resolve = this.reject = () => {};
   delete this._followers;
 };
