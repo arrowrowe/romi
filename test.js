@@ -115,9 +115,30 @@ test('Promise that only one promise will the race', (t) => Romi.all([
     t.is(rea, 'b');
   }),
   Romi.race([
-    Romi.resolve('a'),
-    'b'
+    Romi.resolve('a', 1),
+    Romi.resolve('b'),
+    Romi.resolve('c')
   ]).then((res) => {
     t.is(res, 'b');
+  }),
+  Romi.race([
+    Romi.resolve('a', 1),
+    Romi.resolve('b'),
+    'c'
+  ]).then((res) => {
+    t.is(res, 'c');
   })
 ]));
+
+test.cb('Edge case: An immediately-resolved-resolved Promise\'s then\'s then', (t) => {
+  Romi.resolve(Romi.resolve('a')).catch(t.fail.bind(t)).then((res) => {
+    t.is(res, 'a');
+    t.end();
+  });
+});
+
+test('Prevent illegal direct calls', (t) => {
+  t.throws(() => {
+    Romi.then();
+  });
+});
