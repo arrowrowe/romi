@@ -76,3 +76,23 @@ Romi.prototype.cancel = function () {
   this.complete = this.resolve = this.reject = () => {};
   delete this._followers;
 };
+
+Romi.all = (rs) => new Romi((resolve, reject) => {
+  const count = rs.length;
+  const responses = new Array(count);
+  let fullfilledCount = 0;
+  rs.forEach((r, i) => {
+    r.then(
+      (res) => {
+        responses[i] = res;
+        if (++fullfilledCount >= count) {
+          resolve(responses);
+        }
+      },
+      (rea) => {
+        rs.forEach((r) => r.cancel());
+        reject(rea);
+      }
+    );
+  });
+});

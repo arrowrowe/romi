@@ -46,24 +46,32 @@ test('Prevent completing already completed promises', (t) => {
   });
 });
 
-test.cb('Support multiple followers', (t) => {
-  t.plan(3);
-  let fullfilledCount = 0;
-  const fullfill = () => ++fullfilledCount >= 2 && t.end();
-
-  const someResponse = 'some-response';
-  const anotherResponse = 'another-response';
-  const r = Romi.resolve(someResponse);
-  r.then((res) => {
-    t.is(res, someResponse);
-    return anotherResponse;
-  }).then((res) => {
-    t.is(res, anotherResponse);
-    fullfill();
-  });
-  r.then((res) => {
-    t.is(res, someResponse);
-    fullfill();
+test('Support multiple followers', (t) => {
+  t.plan(4);
+  const responses = [
+    'some-response',
+    'another-response',
+    'yet-another-response',
+    'one-more-response'
+  ];
+  const r = Romi.resolve(responses[0]);
+  return Romi.all([
+    r.then((res) => {
+      t.is(res, responses[0]);
+      return responses[1];
+    }).then((res) => {
+      t.is(res, responses[1]);
+      return responses[2];
+    }),
+    r.then((res) => {
+      t.is(res, responses[0]);
+      return responses[3];
+    })
+  ]).then((res) => {
+    t.same(res, [
+      responses[2],
+      responses[3]
+    ]);
   });
 });
 
@@ -73,3 +81,20 @@ test.cb('Cancelable', (t) => {
   a.cancel();
   setTimeout(t.end, 2);
 });
+
+test('Promise that all promises will resolve', (t) => Romi.all([
+  Romi.all([
+    Romi.resolve('a', 2),
+    Romi.resolve('b', 1),
+    Romi.resolve('c', 3)
+  ]).then((res) => {
+    t.same(res, ['a', 'b', 'c']);
+  }),
+  Romi.all([
+    Romi.reject('a', 3),
+    Romi.resolve('b', 1),
+    Romi.reject('c', 2)
+  ]).then(t.fail.bind(t), (rea) => {
+    t.is(rea, 'c');
+  })
+]));
