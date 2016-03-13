@@ -77,35 +77,46 @@ Romi.prototype.cancel = function () {
   delete this._followers;
 };
 
+const cancelAll = (rs) => rs.forEach((r) => typeof r.cancel === 'function' && r.cancel());
+
 Romi.all = (rs) => new Romi((resolve, reject) => {
   const count = rs.length;
   const responses = new Array(count);
   let fullfilledCount = 0;
+  const resolveOne = (res, i) => {
+    responses[i] = res;
+    if (++fullfilledCount >= count) {
+      resolve(responses);
+    }
+  };
   rs.forEach((r, i) => {
-    r.then(
-      (res) => {
-        responses[i] = res;
-        if (++fullfilledCount >= count) {
-          resolve(responses);
+    if (r instanceof Romi) {
+      r.then(
+        (res) => resolveOne(res, i),
+        (rea) => {
+          cancelAll(rs);
+          reject(rea);
         }
-      },
-      (rea) => {
-        rs.forEach((r) => r.cancel());
-        reject(rea);
-      }
-    );
+      );
+    } else {
+      resolveOne(r, i);
+    }
   });
 });
 
 Romi.race = (rs) => new Romi((resolve, reject) => {
   const complete = (fn, val) => {
-    rs.forEach((r) => r.cancel());
+    cancelAll(rs);
     fn(val);
   };
   rs.forEach((r) => {
-    r.then(
-      (res) => complete(resolve, res),
-      (rea) => complete(reject, rea)
-    );
+    if (r instanceof Romi) {
+      r.then(
+        (res) => complete(resolve, res),
+        (rea) => complete(reject, rea)
+      );
+    } else {
+      complete(resolve, r);
+    }
   });
 });

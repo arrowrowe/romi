@@ -84,16 +84,16 @@ test.cb('Cancelable', (t) => {
 
 test('Promise that all promises will resolve', (t) => Romi.all([
   Romi.all([
-    Romi.resolve('a', 2),
-    Romi.resolve('b', 1),
-    Romi.resolve('c', 3)
+    Romi.resolve('a', 1),
+    'b',
+    Romi.resolve('c', 2)
   ]).then((res) => {
     t.same(res, ['a', 'b', 'c']);
   }),
   Romi.all([
-    Romi.reject('a', 3),
-    Romi.resolve('b', 1),
-    Romi.reject('c', 2)
+    Romi.reject('a', 2),
+    'b',
+    Romi.reject('c', 1)
   ]).then(t.fail.bind(t), (rea) => {
     t.is(rea, 'c');
   })
@@ -113,5 +113,11 @@ test('Promise that only one promise will the race', (t) => Romi.all([
     Romi.reject('c', 2)
   ]).then(t.fail.bind(t), (rea) => {
     t.is(rea, 'b');
+  }),
+  Romi.race([
+    Romi.resolve('a'),
+    'b'
+  ]).then((res) => {
+    t.is(res, 'b');
   })
 ]));
