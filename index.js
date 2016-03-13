@@ -96,3 +96,16 @@ Romi.all = (rs) => new Romi((resolve, reject) => {
     );
   });
 });
+
+Romi.race = (rs) => new Romi((resolve, reject) => {
+  const complete = (fn, val) => {
+    rs.forEach((r) => r.cancel());
+    fn(val);
+  };
+  rs.forEach((r) => {
+    r.then(
+      (res) => complete(resolve, res),
+      (rea) => complete(reject, rea)
+    );
+  });
+});

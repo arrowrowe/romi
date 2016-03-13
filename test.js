@@ -98,3 +98,20 @@ test('Promise that all promises will resolve', (t) => Romi.all([
     t.is(rea, 'c');
   })
 ]));
+
+test('Promise that only one promise will the race', (t) => Romi.all([
+  Romi.race([
+    Romi.resolve('a', 2),
+    Romi.resolve('b', 1),
+    Romi.resolve('c', 3)
+  ]).then((res) => {
+    t.is(res, 'b');
+  }),
+  Romi.race([
+    Romi.reject('a', 3),
+    Romi.reject('b', 1),
+    Romi.reject('c', 2)
+  ]).then(t.fail.bind(t), (rea) => {
+    t.is(rea, 'b');
+  })
+]));
