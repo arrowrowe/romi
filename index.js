@@ -1,3 +1,5 @@
+'use strict';
+
 const Romi = module.exports = function (initializer) {
   this._followers = [];
   if (initializer) {
@@ -44,13 +46,15 @@ Romi.prototype.reject = function (val) {
   this.complete('reject', val);
 };
 
-Romi.prototype.complete = function (which, val) {
+Romi.prototype.complete = function (whichOrigin, valOrigin) {
   this.complete = this.resolve = this.reject = () => {
     throw new Error('Promise already completed.');
   };
   const complete = (r) => {
+    let val;
+    let which;
     try {
-      val = r._on[which](val);
+      val = r._on[whichOrigin](valOrigin);
       which = 'resolve';
     } catch (ex) {
       val = ex;
